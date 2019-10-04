@@ -1,0 +1,11 @@
+{
+  "storage_dir": "$HOME/plant_monitoring_images",
+  "rgb_cameras": [
+    {
+      "label": "rgb_cam_1",
+      "device": "/dev/video0",
+      "width": 640,
+      "height": 480
+    }
+  ]
+}

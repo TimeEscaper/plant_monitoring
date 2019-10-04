@@ -8,7 +8,7 @@ Script *rgb_cameras.py* is responsible for capturing images from standard RGB ca
 ```shell script
 python3 rgb_cameras.py <path-to-configuration-file>
 ```
-By default, file *cameras_default.json* in the same directory with script is used.
+By default, file *../config/cameras.json* relative to the script location is used.
 
 Cameras configuration file is a *.json* file with following  structure:
 ```json
@@ -32,5 +32,7 @@ Cameras configuration file is a *.json* file with following  structure:
 ```
 Images will be stored using following schema: 
 *<storage_dir>/\<label>/\<label>_<current_datetime>.jpg*
+
+You can use constant *$HOME* to specify storage path relative to the user's home directory.
 
 - - -
