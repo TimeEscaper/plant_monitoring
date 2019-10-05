@@ -10,9 +10,6 @@ import os
 
 from pathlib import Path
 
-pygame.init()
-pygame.camera.init()
-
 
 # Captures the image from specified camera device
 def capture_image(camera_device, image_size, output_file):
@@ -23,21 +20,11 @@ def capture_image(camera_device, image_size, output_file):
     cam.stop()
 
 
-if __name__ == '__main__':
-    args = sys.argv
-    if len(args) < 2:
-        config_file = Path(os.path.realpath(__file__)).parent.parent / "config/cameras.json"
-    else:
-        config_file = args[1]
-    with open(config_file) as json_file:
-        configuration = json.load(json_file)
+def run_cameras(configuration):
+    pygame.init()
+    pygame.camera.init()
 
-    # Common storage directory for images
-    storage_directory_str = str(configuration["storage_dir"])
-    if storage_directory_str.startswith("$HOME/"):
-        storage_directory = Path.home() / storage_directory_str.strip("$HOME/")
-    else:
-        storage_directory = Path(storage_directory_str)
+    storage_directory = Path(configuration['storage_dir'])
 
     # Current datetime string (common for all images)
     datetime_str = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")

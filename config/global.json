@@ -1,0 +1,14 @@
+{
+	"settings": {
+		"cameras_settings": {
+			"storage_dir": "plant_monitoring_images/"
+		},
+		"light_settings": {
+			"literally": "something"
+		}
+	}, 
+	"devices" : {
+		"cameras": "cameras.json",
+		"light": "light.json"
+	}
+}
