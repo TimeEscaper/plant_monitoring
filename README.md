@@ -29,7 +29,7 @@ Config file *global.json* contains settings of project modules and a list of dev
 *Settings* field contains settings for each device. *Devices* field contains a list of *.json* configuration files for each device. All config files are to be in the same folder with *global.json*.
 
 ## Working with RGB cameras
-Script *rgb_cameras.py* is responsible for capturing images from standard RGB cameras. It takes as input a config from *cameras.json* merged with settings from *global.json*.
+Scripts *rgb_cameras.py* and *realsense_camera.py* are responsible for capturing images from standard RGB cameras and RealSense camera. They take as input a config from *cameras.json* merged with settings from *global.json*.
 
 Cameras configuration file is a *.json* file with following  structure:
 ```json
@@ -47,10 +47,19 @@ Cameras configuration file is a *.json* file with following  structure:
       "width": 1280,
       "height": 720
     }
-  ]
+  ],
+  "realsense_camera": {
+    "label": "realsense",
+    "width": 640,
+    "height": 480
+  }
 }
 ```
-Images will be stored using following schema: 
+Images from RGB cameras will be stored using following schema: 
 *<storage_dir>/\<label>/\<label>_<current_datetime>.jpg*
 
+RGB image, depth map image and point cloud are obtained using RealSense camera. Files will be stored using following schema:
+*<storage_dir>/\<label>_rgb/\<label>_rgb\_<current_datetime>.jpg*
+*<storage_dir>/\<label>_depth/\<label>_depth\_<current_datetime>.jpg*
+*<storage_dir>/\<label>_point_cloud/\<label>_point\_cloud\_<current_datetime>.ply*
 - - -
