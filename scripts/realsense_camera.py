@@ -46,12 +46,19 @@ def run_realsense_camera(configuration):
     rs_pipeline = rs.pipeline()
     rs_pipeline.start(config)
 
+    delay_counter = 0
+
     try:
         while True:
             frames = rs_pipeline.wait_for_frames()
             depth_frame = frames.get_depth_frame()
             color_frame = frames.get_color_frame()
             if (depth_enabled and not depth_frame) or (rgb_enabled and not color_frame):
+                continue
+
+            # Add some "delay" to let camera to be auto-calibrated
+            if delay_counter < 100:
+                delay_counter += 1
                 continue
 
             datetime_str = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
