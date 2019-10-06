@@ -1,7 +1,7 @@
 {
 	"settings": {
 		"cameras_settings": {
-			"storage_dir": "plant_monitoring_images/"
+			"storage_dir": "$HOME/plant_monitoring_images/"
 		},
 		"light_settings": {
 			"literally": "something"

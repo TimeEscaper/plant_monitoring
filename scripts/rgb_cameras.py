@@ -24,7 +24,11 @@ def run_cameras(configuration):
     pygame.init()
     pygame.camera.init()
 
-    storage_directory = Path(configuration['storage_dir'])
+    storage_directory_str = str(configuration["storage_dir"])
+    if storage_directory_str.startswith("$HOME/"):
+        storage_directory = Path.home() / storage_directory_str.strip("$HOME/")
+    else:
+        storage_directory = Path(storage_directory_str)
 
     # Current datetime string (common for all images)
     datetime_str = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
