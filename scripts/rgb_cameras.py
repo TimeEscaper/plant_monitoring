@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
 
+import datetime
+import time
+from pathlib import Path
+
 # Currently use pygame instead of OpenCV to avoid unnecessary "fat" dependencies
 import pygame
 import pygame.camera
-import sys
-import json
-import datetime
-import os
-
-from pathlib import Path
 
 
 # Captures the image from specified camera device
 def capture_image(camera_device, image_size, output_file):
     cam = pygame.camera.Camera(camera_device, image_size)
     cam.start()
+    time.sleep(1)
     image = cam.get_image()
     pygame.image.save(image, output_file)
     cam.stop()
