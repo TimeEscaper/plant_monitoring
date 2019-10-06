@@ -2,6 +2,15 @@
 Plant growth monitoring project.
 
 - - -
+## Dependencies
+Project is designed to be run with Python 3.6+.
+
+Project requires following system-wide dependencies:
+* OpenCV 3.4+
+* RealSense Drivers and SDK (see [Linux installation guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md))
+
+Required Python packages specified in *requirements.txt*.
+- - -
 
 ## Usage
 A script *run_system.py* is main and executed on a call of a scheduler. It reads global config file *global.json* from *./config* and runs a sequence of operations, i.e. turn on light, take a shot, turn off light, etc.
@@ -29,7 +38,7 @@ Config file *global.json* contains settings of project modules and a list of dev
 *Settings* field contains settings for each device. *Devices* field contains a list of *.json* configuration files for each device. All config files are to be in the same folder with *global.json*.
 
 ## Working with RGB cameras
-Scripts *rgb_cameras.py* and *realsense_camera.py* are responsible for capturing images from standard RGB cameras and RealSense camera. They take as input a config from *cameras.json* merged with settings from *global.json*.
+Scripts *rgb_cameras.py* and *realsense_cameras.py* are responsible for capturing images from standard RGB cameras and RealSense cameras. They take as input a config from *cameras.json* merged with settings from *global.json*.
 
 Cameras configuration file is a *.json* file with following  structure:
 ```json
@@ -48,17 +57,28 @@ Cameras configuration file is a *.json* file with following  structure:
       "height": 720
     }
   ],
-  "realsense_camera": {
-    "label": "realsense",
-    "width": 640,
-    "height": 480
-  }
+  "realsense_cameras": [
+    {
+      "label": "realsense_1",
+      "serial_no": "Serial number (can be obtained from realsense-viewer",
+      "width": 640,
+      "height": 480,
+      "point_cloud_enabled": false
+    },
+    {
+      "label": "realsense_M",
+      "serial_no": "Serial number (can be obtained from realsense-viewer",
+      "width": 1280,
+      "height": 720,
+      "point_cloud_enabled": true
+    }
+  ]
 }
 ```
 Images from RGB cameras will be stored using following schema: 
 *<storage_dir>/\<label>/\<label>_<current_datetime>.jpg*
 
-RGB image, depth map image and point cloud are obtained using RealSense camera. Files will be stored using following schema:
+RGB images, depth map images and point clouds can be obtained using RealSense cameras. Files will be stored using following schema:
 *<storage_dir>/\<label>_rgb/\<label>_rgb\_<current_datetime>.jpg*
 *<storage_dir>/\<label>_depth/\<label>_depth\_<current_datetime>.jpg*
 *<storage_dir>/\<label>_point_cloud/\<label>_point\_cloud\_<current_datetime>.ply*

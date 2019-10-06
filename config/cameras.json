@@ -7,9 +7,13 @@
       "height": 480
     }
   ],
-  "realsense_camera": {
-    "label": "realsense",
-    "width": 640,
-    "height": 480
-  }
+  "realsense_cameras": [
+    {
+      "label": "realsense_1",
+      "serial_no": "627204001757",
+      "width": 640,
+      "height": 480,
+      "point_cloud_enabled": false
+    }
+  ]
 }

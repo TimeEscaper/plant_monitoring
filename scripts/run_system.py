@@ -6,7 +6,7 @@ from pathlib import Path
 
 from rgb_cameras import run_cameras
 from light_switcher import switch_light
-from realsense_camera import run_realsense_camera
+from realsense_cameras import run_realsense_cameras
 
 if __name__ == '__main__':
     args = sys.argv
@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     # 2. Turn cameras on and take photos
     run_cameras(cameras_config)
-    run_realsense_camera(cameras_config)
+    run_realsense_cameras(cameras_config)
 
     # 3. Turn lights off
     switch_light(light_config, 'off')
