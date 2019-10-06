@@ -7,18 +7,9 @@
       "height": 480
     }
   ],
-  "realsense_camera": [
-    {
-      "label": "realsense_rgb",
-      "type": "rgb",
-      "width": 640,
-      "height": 480
-    },
-    {
-      "label": "realsense_depth",
-      "type": "depth",
-      "width": 640,
-      "height": 480
-    }
-  ]
+  "realsense_camera": {
+    "label": "realsense",
+    "width": 640,
+    "height": 480
+  }
 }
