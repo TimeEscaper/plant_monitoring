@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 
 import json
 from pathlib import Path
@@ -29,14 +30,15 @@ if __name__ == '__main__':
 
     with open(config_dir / devices['light']) as file:
         light_config = json.load(file)
-    light_config.update(settings['light_settings'])
+    #light_config.update(settings['light_settings'])
 
     # 1. Turn lights on
     switch_light(light_config, 'on')
-
+    time.sleep(1)
     # 2. Turn cameras on and take photos
     run_cameras(cameras_config)
     run_realsense_cameras(cameras_config)
 
+    time.sleep(1)
     # 3. Turn lights off
     switch_light(light_config, 'off')
