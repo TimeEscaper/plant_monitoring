@@ -9,16 +9,16 @@ import datetime
 
 from pathlib import Path
 
+from blur_util import is_image_blurred
 
-def save_depth_image(depth_frame, output_file):
+
+def get_depth_image(depth_frame):
     depth_image = np.asanyarray(depth_frame.get_data())
-    depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
-    cv2.imwrite(output_file, depth_colormap)
+    return cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.03), cv2.COLORMAP_JET)
 
 
-def save_rgb_image(color_frame, output_file):
-    color_image = np.asanyarray(color_frame.get_data())
-    cv2.imwrite(output_file, color_image)
+def get_rgb_image(color_frame):
+    return np.asanyarray(color_frame.get_data())
 
 
 def save_point_cloud(color_frame, depth_frame, output_file):
@@ -64,6 +64,8 @@ def run_realsense_cameras(configuration):
 
         delay_counter = 0
 
+        blur_count = 0
+
         try:
             while True:
                 frames = rs_pipeline.wait_for_frames()
@@ -82,8 +84,16 @@ def run_realsense_cameras(configuration):
                 depth_file = get_file(storage_directory, label + "_depth", datetime_str, ".jpg")
                 rgb_file = get_file(storage_directory, label + "_rgb", datetime_str, ".jpg")
 
-                save_depth_image(depth_frame, depth_file)
-                save_rgb_image(color_frame, rgb_file)
+                color_image = get_rgb_image(color_frame)
+                if is_image_blurred(color_image) and blur_count < 5:
+                    print("Image for " + rgb_file + " got blurred, try again")
+                    blur_count += 1
+                    time.sleep(0.5)
+                    continue
+                depth_image = get_depth_image(depth_frame)
+
+                cv2.imwrite(rgb_file, color_image)
+                cv2.imwrite(depth_file, depth_image)
 
                 if point_cloud_enabled:
                     point_cloud_file = get_file(storage_directory, label + "_point_cloud", datetime_str, ".ply")

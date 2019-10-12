@@ -4,8 +4,9 @@ import datetime
 import time
 from pathlib import Path
 
-# Currently use pygame instead of OpenCV to avoid unnecessary "fat" dependencies
 import cv2
+
+from blur_util import is_image_blurred
 
 
 # Captures the image from specified camera device
@@ -14,7 +15,13 @@ def capture_image(camera_device, image_size, output_file):
     cam.set(cv2.CAP_PROP_FRAME_WIDTH, image_size[0])
     cam.set(cv2.CAP_PROP_FRAME_HEIGHT, image_size[1])
     time.sleep(1)
-    ret, image = cam.read()
+    for i in range(0, 5):
+        ret, image = cam.read()
+        blurred = is_image_blurred(image)
+        if not blurred:
+            break
+        print("Image for " + output_file + " got blurred, try again")
+        time.sleep(0.5)
     cv2.imwrite(output_file, image)
     cam.release()
 
