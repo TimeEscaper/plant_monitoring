@@ -6,6 +6,7 @@ import pyrealsense2 as rs
 import numpy as np
 import cv2
 import datetime
+import time
 
 from pathlib import Path
 
@@ -56,7 +57,7 @@ def run_realsense_cameras(configuration):
 
         config = rs.config()
         config.enable_device(serial_number)
-        config.enable_stream(rs.stream.depth, width, height, rs.format.z16, 30)
+        config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
         config.enable_stream(rs.stream.color, width, height, rs.format.bgr8, 30)
 
         rs_pipeline = rs.pipeline()
