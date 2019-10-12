@@ -2,7 +2,25 @@
   "rgb_cameras": [
     {
       "label": "rgb_cam_1",
-      "device": "/dev/video0",
+      "device": "/dev/v4l/by-path/platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4.1:1.0-video-index0",
+      "width": 640,
+      "height": 480
+    },
+    {
+      "label": "rgb_cam_2",
+      "device": "/dev/v4l/by-path/platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4.2:1.0-video-index0",
+      "width": 640,
+      "height": 480
+    },
+    {
+      "label": "rgb_cam_3",
+      "device": "/dev/v4l/by-path/platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4.3:1.0-video-index0",
+      "width": 640,
+      "height": 480
+    },
+    {
+      "label": "rgb_cam_4",
+      "device": "/dev/v4l/by-path/platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4.4:1.0-video-index0",
       "width": 640,
       "height": 480
     }
@@ -11,6 +29,13 @@
     {
       "label": "realsense_1",
       "serial_no": "627204001757",
+      "width": 640,
+      "height": 480,
+      "point_cloud_enabled": false
+    },
+    {
+      "label": "realsense_2",
+      "serial_no": "627204004931",
       "width": 640,
       "height": 480,
       "point_cloud_enabled": false
