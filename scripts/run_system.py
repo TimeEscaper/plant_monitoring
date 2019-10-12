@@ -36,8 +36,11 @@ if __name__ == '__main__':
     switch_light(light_config, 'on')
     time.sleep(1)
     # 2. Turn cameras on and take photos
-    run_cameras(cameras_config)
-    run_realsense_cameras(cameras_config)
+    try:
+        run_cameras(cameras_config)
+        run_realsense_cameras(cameras_config)
+    except Exception as e:
+        print(e)
 
     time.sleep(1)
     # 3. Turn lights off
