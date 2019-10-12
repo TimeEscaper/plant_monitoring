@@ -5,23 +5,21 @@ import time
 from pathlib import Path
 
 # Currently use pygame instead of OpenCV to avoid unnecessary "fat" dependencies
-import pygame
-import pygame.camera
+import cv2
 
 
 # Captures the image from specified camera device
 def capture_image(camera_device, image_size, output_file):
-    cam = pygame.camera.Camera(camera_device, image_size)
-    cam.start()
+    cam = cv2.VideoCapture(camera_device)
+    cam.set(cv2.CAP_PROP_FRAME_WIDTH, image_size[0])
+    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, image_size[1])
     time.sleep(1)
-    image = cam.get_image()
-    pygame.image.save(image, output_file)
-    cam.stop()
+    ret, image = cam.read()
+    cv2.imwrite(output_file, image)
+    cam.release()
 
 
 def run_cameras(configuration):
-    pygame.init()
-    pygame.camera.init()
 
     storage_directory_str = str(configuration["storage_dir"])
     if storage_directory_str.startswith("$HOME/"):
