@@ -208,8 +208,11 @@ if __name__ == '__main__':
 
     scheduler = BlockingScheduler()
     logger.info("Scheduling the job")
-    scheduler.add_job(func=(lambda: run_job_cameras(settings["light_config"], settings["cameras_config"], settings["sensors_config"], logger)),
-                      trigger="interval", seconds=settings['run_interval'])
+    scheduler.add_job(func=(lambda: run_job_cameras(settings["light_config"], settings["cameras_config"],
+                                                    settings["sensors_config"], logger)), trigger="interval",
+                      seconds=settings['run_interval'])
+    scheduler.add_job(func=(lambda: run_job_sensors(settings["sensors_config"], logger)), trigger="interval",
+                      seconds=60)
 
     atexit.register(lambda: scheduler.shutdown())
     scheduler.start()
