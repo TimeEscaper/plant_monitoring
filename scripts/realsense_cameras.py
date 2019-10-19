@@ -44,14 +44,20 @@ def capture_realsense(camera_config, storage_directory, logger):
     serial_number = str(camera_config["serial_no"])
     width = int(camera_config["width"])
     height = int(camera_config["height"])
+    if "depth_enabled" not in camera_config:
+        depth_enabled = False
+    else:
+        depth_enabled = bool(camera_config["depth_enabled"])
     if "point_cloud_enabled" not in camera_config:
         point_cloud_enabled = False
     else:
         point_cloud_enabled = bool(camera_config["point_cloud_enabled"])
+        depth_enabled = True
 
     config = rs.config()
     config.enable_device(serial_number)
-    config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
+    if depth_enabled:
+        config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
     config.enable_stream(rs.stream.color, width, height, rs.format.bgr8, 30)
 
     rs_pipeline = rs.pipeline()
@@ -69,9 +75,16 @@ def capture_realsense(camera_config, storage_directory, logger):
     try:
         while True:
             frames = rs_pipeline.wait_for_frames()
-            depth_frame = frames.get_depth_frame()
+            if depth_enabled:
+                depth_frame = frames.get_depth_frame()
+            else:
+                depth_frame = None
             color_frame = frames.get_color_frame()
-            if not depth_frame or not color_frame:
+
+            depth_received = (depth_frame is None) or not depth_enabled
+            color_received = color_frame is None
+
+            if not depth_received or not color_received:
                 continue
 
             # Add some "delay" to let camera to be auto-calibrated
@@ -81,7 +94,8 @@ def capture_realsense(camera_config, storage_directory, logger):
 
             datetime_str = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 
-            depth_file = get_file(storage_directory, label + "_depth", datetime_str, ".jpg")
+            if depth_enabled:
+                depth_file = get_file(storage_directory, label + "_depth", datetime_str, ".jpg")
             rgb_file = get_file(storage_directory, label + "_rgb", datetime_str, ".jpg")
 
             color_image = get_rgb_image(color_frame)
@@ -90,10 +104,13 @@ def capture_realsense(camera_config, storage_directory, logger):
                 blur_count += 1
                 time.sleep(0.5)
                 continue
-            depth_image = get_depth_image(depth_frame)
+            if depth_enabled:
+                depth_image = get_depth_image(depth_frame)
 
             cv2.imwrite(rgb_file, color_image)
-            cv2.imwrite(depth_file, depth_image)
+
+            if depth_enabled:
+                cv2.imwrite(depth_file, depth_image)
 
             if point_cloud_enabled:
                 point_cloud_file = get_file(storage_directory, label + "_point_cloud", datetime_str, ".ply")

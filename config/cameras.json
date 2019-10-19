@@ -31,14 +31,16 @@
       "serial_no": "627204001757",
       "width": 1920,
       "height": 1080,
-      "point_cloud_enabled": false
+      "point_cloud_enabled": false,
+      "depth_enabled": false
     },
     {
       "label": "realsense_2",
       "serial_no": "627204004931",
       "width": 1920,
       "height": 1080,
-      "point_cloud_enabled": false
+      "point_cloud_enabled": false,
+      "depth_enabled": false
     }
   ]
 }
