@@ -5,7 +5,8 @@
 		},
 		"light_settings": {
 			"literally": "something"
-		}
+		},
+		"run_interval_seconds": 1800
 	}, 
 	"devices" : {
 		"cameras": "cameras.json",
