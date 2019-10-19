@@ -118,7 +118,7 @@ def capture_realsense(camera_config, storage_directory, logger):
 
             logger.info("Saved images from " + str(serial_number))
 
-            return color_image
+            return rgb_file
 
     except Exception as e:
         logger.error("Error while capturing from " + str(serial_number) + ": " + str(e))

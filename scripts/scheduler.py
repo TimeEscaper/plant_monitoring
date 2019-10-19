@@ -12,6 +12,7 @@ from apscheduler.schedulers.background import BlockingScheduler
 
 import pandas as pd
 import numpy as np
+import requests
 
 from rgb_cameras import run_cameras
 from light_switcher import switch_light
@@ -139,12 +140,24 @@ def run_job(light_config, cameras_config, logger):
         logger.error("Error while capturing from cameras: " + str(e))
 
     csv_file = write_images_to_csv(cameras_config, rgb_images, realsense_images, logger)
-
     time.sleep(1)
 
     # 3. Turn lights off
     logger.info("Switching light off")
     switch_light(light_config, 'off')
+
+    # 4. Upload csv files to server
+    if csv_file is not None:
+        logger.info("Starting to upload file to server")
+        try:
+            files = {'upload_file': open(csv_file, 'rb')}
+            response = requests.post("http://spp.pythonanywhere.com/upload/csv/cameras", files=files)
+            if response.status_code != 200:
+                logger.error("Error while uploading csv file: status code " + str(response.status_code))
+            else:
+                logger.info("Successfully uploaded csv file")
+        except Exception as e:
+            logger.error("Error while uploading csv file: " + str(e))
 
 
 if __name__ == '__main__':
