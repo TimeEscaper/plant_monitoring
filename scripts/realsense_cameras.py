@@ -81,7 +81,7 @@ def capture_realsense(camera_config, storage_directory, logger):
                 depth_frame = None
             color_frame = frames.get_color_frame()
 
-            depth_received = depth_frame is not None
+            depth_received = (depth_frame is not None) or (not depth_enabled)
             color_received = color_frame is not None
 
             if not depth_received or not color_received:
