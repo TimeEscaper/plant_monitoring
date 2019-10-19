@@ -1,11 +1,15 @@
 {
 	"settings": {
 		"cameras_settings": {
-			"storage_dir": "$HOME/plant_monitoring_images/",
+			"storage_dir": "$HOME/plant_monitoring_data/",
 			"csv_file": "cameras_images.csv"
 		},
 		"light_settings": {
 			"literally": "something"
+		},
+		"sensors_settings": {
+			"storage_dir": "$HOME/plant_monitoring_data/",
+			"csv_file": "sensors.csv"
 		},
 		"run_interval_seconds": 1800
 	}, 
