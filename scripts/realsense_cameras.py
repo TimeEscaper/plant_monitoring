@@ -52,7 +52,7 @@ def capture_realsense(camera_config, storage_directory, logger):
         point_cloud_enabled = False
     else:
         point_cloud_enabled = bool(camera_config["point_cloud_enabled"])
-        depth_enabled = True
+        depth_enabled = point_cloud_enabled
 
     config = rs.config()
     config.enable_device(serial_number)
