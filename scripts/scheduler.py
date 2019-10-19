@@ -19,7 +19,7 @@ from light_switcher import switch_light
 from realsense_cameras import run_realsense_cameras
 from sensors import readMessageFromArduino
 
-need_light_up = False
+need_light_up = True
 
 def parse_configs():
     args = sys.argv
