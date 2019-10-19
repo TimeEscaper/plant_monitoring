@@ -86,9 +86,13 @@ if __name__ == '__main__':
     settings = parse_configs()
 
     logger = init_logger()
+    logger.info("Script started")
+    time.sleep(2)
+    logger.info("Starting to capture images for the firs time")
+    run_job(settings["light_config"], settings["cameras_config"], logger)
 
     scheduler = BlockingScheduler()
-
+    logger.info("Scheduling the job")
     scheduler.add_job(func=(lambda: run_job(settings["light_config"], settings["cameras_config"], logger)),
                       trigger="interval", seconds=settings['run_interval'])
 
