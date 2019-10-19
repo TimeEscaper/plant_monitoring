@@ -51,6 +51,7 @@ def run_cameras(configuration):
 
     logger = logging.getLogger('root')
 
+    result = dict()
     for camera_config in configuration["rgb_cameras"]:
         label = str(camera_config["label"])
         device = str(camera_config["device"])
@@ -64,11 +65,13 @@ def run_cameras(configuration):
 
         try:
             capture_image(device, (image_width, image_height), image_file)
-        except RuntimeError as e:
-            logger.exception("message")
+            result[label] = image_file
+        except Exception as e:
+            logger.error("Error while capturing image: " + str(e))
         else:
             logger.info("Successfully captured image " + image_file)
-            pass
+
+    return result
 
 
 

@@ -1,7 +1,8 @@
 {
 	"settings": {
 		"cameras_settings": {
-			"storage_dir": "$HOME/plant_monitoring_images/"
+			"storage_dir": "$HOME/plant_monitoring_images/",
+			"csv_file": "cameras_images.csv"
 		},
 		"light_settings": {
 			"literally": "something"

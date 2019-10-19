@@ -118,7 +118,7 @@ def capture_realsense(camera_config, storage_directory, logger):
 
             logger.info("Saved images from " + str(serial_number))
 
-            break
+            return color_image
 
     except Exception as e:
         logger.error("Error while capturing from " + str(serial_number) + ": " + str(e))
@@ -137,5 +137,10 @@ def run_realsense_cameras(configuration):
 
     logger = logging.getLogger('root')
 
+    result = dict()
     for camera_config in configuration["realsense_cameras"]:
-        capture_realsense(camera_config, storage_directory, logger)
+        image = capture_realsense(camera_config, storage_directory, logger)
+        if image is not None:
+            result[camera_config['label']] = image
+
+    return result
