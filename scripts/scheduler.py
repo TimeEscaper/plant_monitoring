@@ -35,7 +35,7 @@ def parse_configs():
 
     settings = configuration['settings']
     devices = configuration['devices']
-    sensors = configuration['sensors']
+    sensors = settings['sensors_settings']
 
     with open(config_dir / devices['cameras']) as file:
         cameras_config = json.load(file)
@@ -51,6 +51,8 @@ def parse_configs():
         sensors_directory = Path.home() / sensors_directory_str.strip("$HOME/")
     else:
         sensors_directory = Path(sensors_directory_str)
+    if not sensors_directory.exists():
+        sensors_directory.mkdir(parents=True)
     csv = Path(str(sensors["csv_file"]))
     sensors["csv_file"] = str(sensors_directory / csv)
 
