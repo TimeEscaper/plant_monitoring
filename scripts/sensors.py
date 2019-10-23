@@ -17,9 +17,5 @@ def readMessageFromArduino(sensors_settings):
         smsMessage += chr(data_received_from_Arduino[i])
 
     pars = smsMessage.split(';')
-    logger.info("Sensors: " + str(pars[0:-1]))
-    df_pars = pd.DataFrame([pars[0:-1]], columns=['CO2(ppm)', 'Light(lx)', 'Temperature(C)', 'Humidity(%)'])
-    with open(sensors_settings["csv_file"], 'a') as f:
-        df_pars.to_csv(f, mode='a', index=False, header=f.tell() == 0)
 
-    return float(pars[1]) < 10.0
+    return pars

@@ -4,6 +4,7 @@ import os
 import logging
 import time
 import datetime
+import threading
 
 import json
 from pathlib import Path
@@ -20,6 +21,8 @@ from realsense_cameras import run_realsense_cameras
 from sensors import readMessageFromArduino
 
 need_light_up = True
+
+current_sensor_values = []
 
 def parse_configs():
     args = sys.argv
@@ -193,10 +196,33 @@ def run_job_cameras(light_config, cameras_config, sensors_config, logger):
             logger.error("Error while uploading sensors csv file: " + str(e))
 
 
-def run_job_sensors(sensors_config, logger):
+def sensors_thread_function(sensors_config, logger):
     global need_light_up
+    global current_sensor_values
+    while True:
+        time.sleep(30)
+        sensor_values = readMessageFromArduino(sensors_config)
+        if len(sensor_values) != 4:
+            logger.error("Unable to read sensors values")
+            current_sensor_values = []
+            continue
+        current_sensor_values = sensor_values
+        need_light_up = float(sensor_values[1]) < 10.0
+
+
+def run_job_sensors(sensor_values, logger):
+    global need_light_up
+    global current_sensor_values
     logger.info("Reading message from Arduino")
-    need_light_up = readMessageFromArduino(sensors_config)
+    sensor_values = current_sensor_values
+    if len(current_sensor_values) != 4:
+        return
+
+    logger.info("Sensors: " + str(sensor_values[0:-1]))
+    df_pars = pd.DataFrame([sensor_values[0:-1]], columns=['CO2(ppm)', 'Light(lx)', 'Temperature(C)', 'Humidity(%)'])
+    with open(sensor_values["csv_file"], 'a') as f:
+        df_pars.to_csv(f, mode='a', index=False, header=f.tell() == 0)
+
     logger.info("Light needed: " + str(need_light_up))
     logger.info("Message received")
 
@@ -207,6 +233,8 @@ if __name__ == '__main__':
     logger.info("Script started")
 
     time.sleep(2)
+
+
 
     scheduler = BlockingScheduler()
     logger.info("Scheduling the job")
