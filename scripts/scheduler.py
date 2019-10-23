@@ -246,6 +246,8 @@ if __name__ == '__main__':
     x = threading.Thread(target=sensors_thread_function, args=(settings["sensors_config"], logger))
     x.start()
 
+    run_job_cameras(settings["light_config"], settings["cameras_config"], settings["sensors_config"], logger)
+
     scheduler = BlockingScheduler()
     logger.info("Scheduling the job")
     scheduler.add_job(func=(lambda: run_job_cameras(settings["light_config"], settings["cameras_config"],
