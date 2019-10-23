@@ -201,8 +201,13 @@ def sensors_thread_function(sensors_config, logger):
     global current_sensor_values
     while True:
         time.sleep(30)
-        sensor_values = readMessageFromArduino(sensors_config)
-        if len(sensor_values) != 4:
+        try:
+            sensor_values = readMessageFromArduino(sensors_config)
+        except Exception as e:
+            logger.error("Error while reading sensor values: " + str(e))
+            current_sensor_values = []
+            continue
+        if len(sensor_values) < 4:
             logger.error("Unable to read sensors values")
             current_sensor_values = []
             continue
@@ -215,11 +220,15 @@ def run_job_sensors(sensor_values, logger):
     global current_sensor_values
     logger.info("Reading message from Arduino")
     sensor_values = current_sensor_values
-    if len(current_sensor_values) != 4:
+    if len(current_sensor_values) < 4:
         return
+    if len(sensor_values) > 4:
+        stop_index = 4
+    else:
+        stop_index = -1
 
     logger.info("Sensors: " + str(sensor_values[0:-1]))
-    df_pars = pd.DataFrame([sensor_values[0:-1]], columns=['CO2(ppm)', 'Light(lx)', 'Temperature(C)', 'Humidity(%)'])
+    df_pars = pd.DataFrame([sensor_values[0:stop_index]], columns=['CO2(ppm)', 'Light(lx)', 'Temperature(C)', 'Humidity(%)'])
     with open(sensor_values["csv_file"], 'a') as f:
         df_pars.to_csv(f, mode='a', index=False, header=f.tell() == 0)
 
@@ -234,7 +243,8 @@ if __name__ == '__main__':
 
     time.sleep(2)
 
-
+    x = threading.Thread(target=sensors_thread_function, args=(settings["sensors_config"], logger))
+    x.start()
 
     scheduler = BlockingScheduler()
     logger.info("Scheduling the job")
