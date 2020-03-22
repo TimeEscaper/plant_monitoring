@@ -1,34 +1,34 @@
 {
   "rgb_cameras": [
     {
-      "label": "rgb_cam_right",
+      "id": "rgb_cam_right",
       "device": "/dev/v4l/by-path/platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4.1:1.0-video-index0",
       "width": 1920,
-      "height": 1080
+      "height": 1080,
+      "focus_skip": 30
     },
     {
-      "label": "rgb_cam_left",
+      "id": "rgb_cam_left",
       "device": "/dev/v4l/by-path/platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4.2:1.0-video-index0",
       "width": 1920,
-      "height": 1080
+      "height": 1080,
+      "focus_skip": 30
     }
   ],
   "realsense_cameras": [
     {
-      "label": "realsense_left",
-      "serial_no": "627204001757",
+      "id": "realsense_left",
+      "serial_number": "627204001757",
       "width": 1920,
       "height": 1080,
-      "point_cloud_enabled": false,
-      "depth_enabled": false
+      "focus_skip": 30
     },
     {
       "label": "realsense_top",
-      "serial_no": "627204004931",
+      "serial_number": "627204004931",
       "width": 1920,
       "height": 1080,
-      "point_cloud_enabled": false,
-      "depth_enabled": false
+      "focus_skip": 30
     }
   ]
 }

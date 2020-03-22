@@ -1,3 +1,18 @@
-{
-	"light_1": 2
-}
+[
+	{
+		"id": "phyto",
+		"pin": 1
+	},
+	{
+		"id": "led_tape_1",
+		"pin": 2
+	},
+	{
+		"id": "led_tape_2",
+		"pin": 3
+	},
+	{
+		"id": "alarm_led",
+		"pin": 4
+	}
+]

@@ -1,0 +1,65 @@
+{
+  "name": "plant_photos",
+  "storage_dir": "/home/sibirsky/plant_photos_test",
+  "run_interval_seconds": 1800,
+
+  "pipeline": [
+    {
+      "task_type": "light_off",
+      "light_ids": ["phyto"],
+      "only_if_was_enabled": true
+    },
+    {
+      "task_type": "light_on",
+      "light_ids": ["alarm_led"]
+    },
+    {
+      "task_type": "delay",
+      "interval_seconds": 10
+    },
+    {
+      "task_type": "light_on",
+      "light_ids": ["led_tape_1"]
+    },
+    {
+      "task_type": "rgb_photo",
+      "camera_ids": ["bl", "ml", "mr", "br", "tm"],
+      "filename_postfix": "1"
+    },
+    {
+      "task_type": "light_off",
+      "light_ids": ["led_tape_1"]
+    },
+    {
+      "task_type": "light_on",
+      "light_ids": ["led_tape_2"]
+    },
+    {
+      "task_type": "rgb_photo",
+      "camera_ids": ["bl", "ml", "mr", "br", "tm"],
+      "filename_postfix": "2"
+    },
+    {
+      "task_type": "light_on",
+      "light_ids":["led_tape_1", "led_tape_2"]
+    },
+    {
+      "task_type": "rgb_photo",
+      "camera_ids": ["bl", "ml", "mr", "br", "tm"],
+      "filename_postfix": "3"
+    },
+    {
+      "task_type": "light_off",
+      "light_ids": ["led_tape_1", "led_tape_2"]
+    },
+    {
+      "task_type": "light_off",
+      "light_ids": ["alarm_led"]
+    },
+    {
+      "task_type": "light_off",
+      "light_ids": ["phyto"],
+      "only_if_was_enabled": true
+    }
+  ]
+}
