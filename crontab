@@ -1,2 +1,0 @@
-00 * * * * python3 $PLANT_MONITOR_DIR/scripts/run_system.py
-30 * * * * python3 $PLANT_MONITOR_DIR/scripts/run_system.py
