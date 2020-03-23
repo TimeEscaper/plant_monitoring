@@ -10,8 +10,8 @@ import atexit
 
 from apscheduler.schedulers.background import BlockingScheduler
 
-from .pipeline import PipelineExecutor
-from .drivers.i2c import I2CDriver
+from pipeline import PipelineExecutor
+from drivers.i2c import I2CDriver
 
 
 def parse_configs():
@@ -50,6 +50,7 @@ def parse_configs():
 
 
 def main():
+    log = logging.getLogger("main")
     cameras, light, project = parse_configs()
 
     storage_dir = Path(project["storage_dir"])
@@ -60,16 +61,19 @@ def main():
     connection_queue = Queue()
 
     # Create separate thread for I2C communication
+    log.info("Starting I2C thread")
     i2c_driver = I2CDriver(0x04)
     i2c_thread = Thread(target=i2c_thread_function, args=(i2c_driver, connection_queue))
     i2c_thread.start()
 
+    log.info("Running pipeline for the first time")
     pipeline_executor = PipelineExecutor(storage_dir, cameras, light, connection_queue, project["pipeline"])
 
     # For the first time, execute pipeline manually, then schedule it
     pipeline_executor.execute()
 
     # Create a scheduler and add job to it
+    log.info("Scheduling the pipeline")
     scheduler = BlockingScheduler()
     scheduler.add_job(func=(lambda executor=pipeline_executor: executor.execute()),
                       trigger="interval",
@@ -95,7 +99,7 @@ def i2c_thread_function(driver, queue):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(filename="scheduler.log")
+    logging.basicConfig(level=logging.DEBUG)
     try:
         main()
     except Exception as e:

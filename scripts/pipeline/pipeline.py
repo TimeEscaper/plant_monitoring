@@ -3,8 +3,8 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from ..drivers.light import LightDriver
-from ..drivers.camera import RGBCameraDriver, RealsenseCameraDriver
+from drivers.light import LightDriver
+from drivers.camera import RGBCameraDriver, RealsenseCameraDriver
 
 
 """
@@ -43,17 +43,17 @@ class PipelineExecutor:
         task_type = task["task_type"]
         if task_type is None:
             self.log_.warning("Empty task type!")
-        elif task_type is "delay":
+        elif task_type == "delay":
             time.sleep(task["interval_seconds"])
-        elif task_type is "light_on":
+        elif task_type == "light_on":
             self.execute_lights_(task, True)
-        elif task_type is "light_off":
+        elif task_type == "light_off":
             self.execute_lights_(task, False)
-        elif task_type is "rgb_photo":
+        elif task_type == "rgb_photo":
             self.execute_rgb_photo_(task, datetime_prefix)
-        elif task_type is "depth_photo":
+        elif task_type == "depth_photo":
             self.execute_depth_photo_(task, datetime_prefix)
-        elif task_type is "point_cloud":
+        elif task_type == "point_cloud":
             self.execute_point_cloud_(task, datetime_prefix)
 
     def execute_lights_(self, task, enable):
@@ -77,10 +77,10 @@ class PipelineExecutor:
             # Create camera driver depending on camera type
             driver = None
             camera_type_postfix = None
-            if camera["type"] is "rgb":
+            if camera["type"] == "rgb":
                 driver = RGBCameraDriver(camera["device"])
                 camera_type_postfix = "rg"
-            elif camera["type"] is "realsense":
+            elif camera["type"] == "realsense":
                 driver = RealsenseCameraDriver(camera["serial_number"])
                 camera_type_postfix = "3d"
             else:
@@ -109,7 +109,7 @@ class PipelineExecutor:
             # Create camera driver depending on camera type
             driver = None
             camera_type_postfix = None
-            if camera["type"] is "realsense":
+            if camera["type"] == "realsense":
                 driver = RealsenseCameraDriver(camera["serial_number"])
                 camera_type_postfix = "depth"
             else:
@@ -137,7 +137,7 @@ class PipelineExecutor:
             # Create camera driver depending on camera type
             driver = None
             camera_type_postfix = None
-            if camera["type"] is "realsense":
+            if camera["type"] == "realsense":
                 driver = RealsenseCameraDriver(camera["serial_number"])
                 camera_type_postfix = "point_cloud"
             else:

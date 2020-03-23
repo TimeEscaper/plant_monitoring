@@ -13,73 +13,128 @@ Required Python packages specified in *requirements.txt*.
 - - -
 
 ## Usage
-A script *run_system.py* is main and executed on a call of a scheduler. It reads global config file *global.json* from *./config* and runs a sequence of operations, i.e. turn on light, take a shot, turn off light, etc.
 
-To add $run_system.py$ to scheduler (*cron*), run *chmod +x init.sh && sudo ./init.sh*. The script sets new environment variable *PLANT_MONITOR_DIR* to current path and adds new tasks to */etc/crontab*.
+### Running the code
+The system is designed to schedule plant monitoring tasks. The system can be run with command: `python3 scripts/scheduler.py`. To run system in background, `nohup` can be used: `nohup python3 scripts/scheduler.py &`. By default, the pipeline and devices configurations will be read from *config/* directory in this repository.
 
-Config file *global.json* contains settings of project modules and a list of devices that are used in monitoring system. 
+### Configurations
+Currently, the configurations consist of 3 parts: *cameras configurations*, *light configurations*, *project configuration with pipeline*.
 
+#### Cameras configurations
+Cameras configurations are stored in file *cameras.json* in configurations directory. It is a JSON array that has following structure:
+```json
+[
+    {
+      "id": "bl",
+      "type": "rgb",
+      "device": "/dev/video0",
+      "width": 1920,
+      "height": 1080,
+      "focus_skip": 30
+    },
+    {
+      "id": "tm",
+      "type": "realsense",
+      "serial_number": "627204004931",
+      "width": 1920,
+      "height": 1080,
+      "focus_skip": 30
+    }
+]
 ```
-{
-	"settings": {
-		"cameras_settings": {
-			"storage_dir": "plant_monitoring_images/"
-		},
-		"light_settings": {
-			"literally": "something"
-		}
-	}, 
-	"devices" : {
-		"cameras": "cameras.json",
-		"light": "light.json"
+
+Currently, the ordinary RGB web cameras and Intel RealSense 3D cameras are supported. The fields in configurations are following:
+* *id* - a unique identifier of the camera
+* *type* - type of the camera: *rgb* or *realsense*
+* *device* - path to Linux device of the camera, only for RGB web cameras
+* *serial_number* - serial number of the RealSense camera, only for the RealSense cameras
+* *width*, *height* - size of the output RGB image, for depth image the size is fixed
+* *focus_skip* - number of the first skipped images to let camera to focus, optional
+
+#### Light configuration
+Light configurations are stored in file *light.json* in configurations directory. It is a JSON array that has following structure:
+```json
+[
+	{
+		"id": "phyto",
+		"pin": 1
+	},
+	{
+		"id": "led_tape_1",
+		"pin": 2
 	}
-}
+]
 ```
-*Settings* field contains settings for each device. *Devices* field contains a list of *.json* configuration files for each device. All config files are to be in the same folder with *global.json*.
+Currently, the design assumes that the light is controled by external board that is connected to Raspberry Pi over I2C interface. The fields in configurations are following:
+* *id* - a unique identifier of the light device
+* *pin* - pin of the external board to which this light device is connected to
 
-## Working with RGB cameras
-Scripts *rgb_cameras.py* and *realsense_cameras.py* are responsible for capturing images from standard RGB cameras and RealSense cameras. They take as input a config from *cameras.json* merged with settings from *global.json*.
-
-Cameras configuration file is a *.json* file with following  structure:
+#### Project and pipeline configuration
+Porject configurations are stored in file *project.json* in configurations directory. It is a JSON array that has following structure:
 ```json
 {
-  "rgb_cameras": [
+  "name": "plant_photos",
+  "storage_dir": "/home/sibirsky/plant_photos_test",
+  "run_interval_seconds": 1800,
+
+  "pipeline": [
     {
-      "label": "label of the first camera",
-      "device": "first camera device",
-      "width": 640,
-      "height": 480
+      "task_type": "light_off",
+      "light_ids": ["phyto"],
+      "only_if_was_enabled": true
     },
     {
-      "label": "label of the Nth camera",
-      "device": "Nth camera device",
-      "width": 1280,
-      "height": 720
-    }
-  ],
-  "realsense_cameras": [
-    {
-      "label": "realsense_1",
-      "serial_no": "Serial number (can be obtained from realsense-viewer",
-      "width": 640,
-      "height": 480,
-      "point_cloud_enabled": false
+      "task_type": "light_on",
+      "light_ids": ["alarm_led"]
     },
     {
-      "label": "realsense_M",
-      "serial_no": "Serial number (can be obtained from realsense-viewer",
-      "width": 1280,
-      "height": 720,
-      "point_cloud_enabled": true
+      "task_type": "delay",
+      "interval_seconds": 10
+    },
+    {
+      "task_type": "rgb_photo",
+      "camera_ids": ["bl", "ml", "mr", "br", "tm"],
+      "filename_postfix": "1"
+    },
+    {
+      "task_type": "light_off",
+      "light_ids": ["alarm_led"]
+    },
+    {
+      "task_type": "light_off",
+      "light_ids": ["phyto"],
+      "only_if_was_enabled": true
     }
   ]
 }
 ```
-Images from RGB cameras will be stored using following schema: 
-*<storage_dir>/\<label>/\<label>_<current_datetime>.jpg*
+The commond fields are following:
+* *name* - name of the project
+* *storage_dir* - path to the directory where to store output photos and etc.
+* *run_interval_seconds* - an interval of repeating the pipeline
 
-RGB images, depth map images and point clouds can be obtained using RealSense cameras. Files will be stored using following schema:
-*<storage_dir>/\<label>_rgb/\<label>_rgb\_<current_datetime>.jpg*
-*<storage_dir>/\<label>_depth/\<label>_depth\_<current_datetime>.jpg*
-*<storage_dir>/\<label>_point_cloud/\<label>_point\_cloud\_<current_datetime>.ply*
-- - -
+The pipeline is defined in the field *pipeline*. It is the array that represents the sequence of tasks. The tasks syntax was tried to be designed as self-explained. For now, the following tasks are supported:
+* *light_on* / *light_off* - switches on / off the light. IDs of the lights are imported from light configurations.
+    * *only_if_was_enabled* - an optional field that tells that light shouldn't be switched on/off it was switched off before this pipeline was executed.
+* *delay* - a simple analog to *sleep* function
+* *rgb_photo* - take a set of RGB photos. Camera IDs are imported from cameras configuration.
+    * *filename_postfix* - an optional filename postfix for photos that was taken during this task
+* *depth_photo* - take a set of depth images. Syntax is analog to *rgb_photo* task.
+* *point_cloud* - take a set of point clouds. Syntax is analog to *rgb_photo* task. Point clouds are stored in *.ply* files.
+---
+
+## Project architecture and structure
+The project is designed to be modular and as reusable as possible. The main parts of the project are:
+* *drivers* - a package that contains driver abstractions for different devices: different types of cameras, default light driver, I2C driver with pre-defined communication protocol and etc.
+* *pipeline* - an implementation of the tasks pipeline execution
+* *scheduler.py* - entry point of the program, reads configs and schedules tasks using the *Advanced Python Scheduler (APS)* package.
+
+An important moment is the threading model. Currently, two threads are used:
+* The main thread that is occupied by *Blocking scheduler* (see APS docs)
+* A separate thread for communication with external board over I2C. Communication with this thread is implemented using queue.
+
+In order to add new device and functionality support, the developer should:
+* Create a driver in *drivers* package for it
+* Implement specific tasks *pipeline.PipelineExecutor*
+* Update configs parsing if it is needed
+---

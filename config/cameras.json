@@ -1,6 +1,6 @@
 [
     {
-      "id": "rgb_cam_right",
+      "id": "bl",
       "type": "rgb",
       "device": "/dev/v4l/by-path/platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4.1:1.0-video-index0",
       "width": 1920,
@@ -8,7 +8,7 @@
       "focus_skip": 30
     },
     {
-      "id": "rgb_cam_left",
+      "id": "ml",
       "type": "rgb",
       "device": "/dev/v4l/by-path/platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4.2:1.0-video-index0",
       "width": 1920,
@@ -16,7 +16,15 @@
       "focus_skip": 30
     },
     {
-      "id": "realsense_left",
+      "id": "mr",
+      "type": "rgb",
+      "device": "/dev/v4l/by-path/platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4.3:1.0-video-index0",
+      "width": 1920,
+      "height": 1080,
+      "focus_skip": 30
+    },
+    {
+      "id": "br",
       "type": "realsense",
       "serial_number": "627204001757",
       "width": 1920,
@@ -24,7 +32,7 @@
       "focus_skip": 30
     },
     {
-      "id": "realsense_top",
+      "id": "tm",
       "type": "realsense",
       "serial_number": "627204004931",
       "width": 1920,
