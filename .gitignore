@@ -106,3 +106,6 @@ venv.bak/
 # JetBrains
 /**/.idea/
 /**/.idea/**
+
+# Custom log file
+scheduler.log
