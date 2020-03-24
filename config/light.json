@@ -1,18 +1,26 @@
 [
 	{
 		"id": "phyto",
-		"pin": 1
+		"pin": 41
 	},
 	{
-		"id": "led_tape_1",
-		"pin": 2
+		"id": "left_lamp",
+		"pin": 45
 	},
 	{
-		"id": "led_tape_2",
-		"pin": 3
+		"id": "right_lamp",
+		"pin": 47
+	},
+	{
+		"id": "left_strip",
+		"pin": 37
+	},
+	{
+		"id": "right_strip",
+		"pin": 33
 	},
 	{
 		"id": "alarm_led",
-		"pin": 4
+		"pin": 53
 	}
 ]
