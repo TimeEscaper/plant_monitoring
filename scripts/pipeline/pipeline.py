@@ -55,6 +55,8 @@ class PipelineExecutor:
             self.execute_depth_photo_(task, datetime_prefix)
         elif task_type == "point_cloud":
             self.execute_point_cloud_(task, datetime_prefix)
+        elif task_type == "phyto_light_on":
+            self.execute_phyto_lights_(task)
 
     def execute_lights_(self, task, enable):
         driver = LightDriver(self.hardware_queue_)
@@ -154,3 +156,14 @@ class PipelineExecutor:
                 self.log_.info("Successfully took point cloud " + str(filename))
             except Exception as e:
                 self.log_.error(str(e))
+
+    def execute_phyto_lights_(self, task):
+        if task['on_hours'][0] <= task['on_hours'][1]:
+            hours_list = list(range(task['on_hours'][0], task['on_hours'][1]))
+        else:
+            before_midnight = list(range(task['on_hours'][0], 24))
+            after_midnight = list(range(task['on_hours'][1]))
+            hours_list = before_midnight + after_midnight
+
+        if datetime.now().hour in hours_list:
+            self.execute_lights_(task, True)

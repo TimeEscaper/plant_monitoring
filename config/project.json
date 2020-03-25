@@ -6,7 +6,7 @@
   "pipeline": [
     {
       "task_type": "light_off",
-      "light_ids": ["phyto"],
+      "light_ids": ["phyto", "left_lamp", "right_lamp", "left_strip", "right_strip"],
       "only_if_was_enabled": true
     },
     {
@@ -19,7 +19,7 @@
     },
     {
       "task_type": "light_on",
-      "light_ids": ["led_tape_1"]
+      "light_ids": ["left_lamp", "left_strip"]
     },
     {
       "task_type": "rgb_photo",
@@ -28,11 +28,11 @@
     },
     {
       "task_type": "light_off",
-      "light_ids": ["led_tape_1"]
+      "light_ids": ["left_lamp", "left_strip"]
     },
     {
       "task_type": "light_on",
-      "light_ids": ["led_tape_2"]
+      "light_ids": ["right_lamp", "right_strip"]
     },
     {
       "task_type": "rgb_photo",
@@ -41,7 +41,7 @@
     },
     {
       "task_type": "light_on",
-      "light_ids":["led_tape_1", "led_tape_2"]
+      "light_ids":["left_lamp", "left_strip"]
     },
     {
       "task_type": "rgb_photo",
@@ -50,16 +50,17 @@
     },
     {
       "task_type": "light_off",
-      "light_ids": ["led_tape_1", "led_tape_2"]
+      "light_ids": ["right_lamp", "right_strip", "left_lamp", "left_strip"]
     },
     {
       "task_type": "light_off",
       "light_ids": ["alarm_led"]
     },
     {
-      "task_type": "light_off",
-      "light_ids": ["phyto"],
-      "only_if_was_enabled": true
+      "task_type": "phyto_light_on",
+      "light_ids": ["phyto", "left_lamp", "right_lamp"],
+      "only_if_was_enabled": true,
+      "on_hours": [6, 22]
     }
   ]
 }
